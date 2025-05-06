@@ -16,6 +16,12 @@
     border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     padding: 40px 30px;
+    position: relative; /* Để notificationContainer có thể định vị tương đối */
+}
+
+/* Login form */
+.login-form {
+    position: relative; /* Đảm bảo notificationContainer nằm trong form */
 }
 
 /* Login heading */
@@ -268,4 +274,71 @@
 
 .social-btn.facebook:hover {
     background-color: #365899;
+}
+
+/* Styles cho thông báo */
+.notificationContainer {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    width: 400px;
+}
+
+.notification {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-in-out;
+}
+.notification.exiting {
+    animation: slideOut 0.3s ease-in-out forwards;
+}
+.notification.success {
+    background-color: #28a745; /* Sử dụng màu chính của giao diện */
+}
+
+.notification.error {
+    background-color: #e74c3c; /* Màu đỏ nhạt phù hợp với thiết kế */
+}
+
+.closeButton {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 0 5px;
+}
+
+.closeButton:hover {
+    color: #f0f0f0;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
 }

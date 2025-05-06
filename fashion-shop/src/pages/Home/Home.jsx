@@ -8,7 +8,7 @@ import {
   faAngleRight,
 } from "@fortawesome/free-solid-svg-icons";
 import styles from "./Home.module.css";
-import MainLayout from '../../layouts/MainLayout';
+import MainLayout from '../../layouts/Users/MainLayout';
 // // Import hình ảnh
 import sliderBg1 from "../../assets/img/banner/BannerGirl.webp";
 import sliderBg2 from "../../assets/img/banner/BannerBoy.png.webp";

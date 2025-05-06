@@ -9,7 +9,7 @@ import {
     faLinkedinIn
   } from "@fortawesome/free-brands-svg-icons";
 import styles from "./Header.module.css";
-import logo from '../../assets/img/logo/LogoNew.png'
+import logo from '../../../assets/img/logo/LogoNew.png'
 const Header = () => {
     const [showSearch, setShowSearch] = useState(false);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);

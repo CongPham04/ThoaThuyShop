@@ -1,0 +1,82 @@
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #ffffff;
+    color: black;
+    position: fixed;
+    left: 0;
+    top: 0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+  }
+  
+  .logoContainer {
+    padding: 0.54rem 3.5rem;
+    border-bottom: #6c757d79 1px solid;
+    
+  }
+  
+  /* .logo {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: black;
+    text-align: center;
+  } */
+  .logo {
+    transform: scale(1.4); /* Phóng to 120% */
+    transform-origin: left center; /* Điểm neo ở bên trái */
+
+  }
+.logo img {
+  max-height: 40px;
+}
+  
+  .nav {
+    flex: 1;
+    overflow-y: auto;
+    /* padding: 1rem 0;
+    margin-top: 0%; */
+  }
+  
+  .menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .menuItem {
+    padding: 0.8rem 1.5rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+  }
+  
+  .menuItem:hover {
+    background-color: #4e73df;
+  }
+  
+  .menuText {
+    margin-left: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .icon {
+    width: 20px;
+    text-align: center;
+  }
+  
+  .section {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    color: #b8c2cc;
+    cursor: default;
+  }
+  
+  .section:hover {
+    background-color: transparent;
+  }

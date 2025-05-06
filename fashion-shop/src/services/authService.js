@@ -50,28 +50,22 @@ const login = async (username, password) => {
 };
   
 
-const getMyInfo = async () => {
-  const token = localStorage.getItem('userToken');
+// const getMyInfo = async () => {
+//   const token = localStorage.getItem('userToken');
   
-  try {
-    const response = await axios.get(`${API_URL}/users/myInfo`, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Get user info error:', error.response?.data || error.message);
-    throw error;
-  }
-};
-
-const logout = () => {
-  localStorage.removeItem('userToken');
-};
+//   try {
+//     const response = await axios.get(`${API_URL}/users/myInfo`, {
+//       headers: {
+//         'Authorization': `Bearer ${token}`
+//       }
+//     });
+//     return response.data;
+//   } catch (error) {
+//     console.error('Get user info error:', error.response?.data || error.message);
+//     throw error;
+//   }
+// };
 
 export default {
-  login,
-  getMyInfo,
-  logout
+  login
 };

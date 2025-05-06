@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faLock, faCheck } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faLock, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle, faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import authService from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ const Login = () => {
     password: '',
     rememberMe: false
   });
-  const [error, setError] = useState('');
+  const [notifications, setNotifications] = useState([]); // State để quản lý thông báo
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -24,33 +24,36 @@ const Login = () => {
     }));
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setError('');
-  //   setLoading(true);
-    
-  //   try {
-  //     const response = await authService.login(formData.username, formData.password);
-  //     console.log(response); 
-  //     // Nếu có rememberMe, lưu thông tin vào localStorage
-  //     if (formData.rememberMe) {
-  //       localStorage.setItem('rememberMe', 'true');
-  //     } else {
-  //       localStorage.removeItem('rememberMe');
-  //     }
-      
-  //     // Chuyển hướng sau khi đăng nhập thành công
-  //     navigate('/dashboard'); // Thay đổi route tùy theo ứng dụng của bạn
-      
-  //   } catch (err) {
-  //     setError(err.response?.data?.message || 'Đăng nhập thất bại. Vui lòng thử lại.');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
+  // Hàm thêm thông báo
+  const addNotification = (message, type = 'success') => {
+    // Chỉ giữ một thông báo tại một thời điểm: xóa tất cả thông báo hiện tại
+    setNotifications([]);
+    const id = Date.now(); // Tạo ID duy nhất cho thông báo
+    setNotifications([{ id, message, type, isExiting: false }]);
+
+    // Tự động xóa thông báo sau 6 giây
+    setTimeout(() => {
+      handleRemoveNotification(id);
+    }, 6000);
+  };
+
+  // Hàm xử lý xóa thông báo với hiệu ứng
+  const handleRemoveNotification = (id) => {
+    // Đánh dấu thông báo đang rời đi để áp dụng hiệu ứng slideOut
+    setNotifications((prev) =>
+      prev.map((notif) =>
+        notif.id === id ? { ...notif, isExiting: true } : notif
+      )
+    );
+
+    // Chờ hiệu ứng hoàn tất (0.3s) trước khi xóa hoàn toàn
+    setTimeout(() => {
+      setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+    }, 300); // Thời gian khớp với animation slideOut
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
     setLoading(true);
     
     try {
@@ -67,13 +70,19 @@ const Login = () => {
       const role = response.result?.role || localStorage.getItem('userRole');
       
       if (role === 'ADMIN') {
-        navigate('/dashboard');
+        addNotification('Đăng nhập thành công, đang chuyển hướng!', 'success');
+        setTimeout(() => {
+          navigate('/dashboard');
+        }, 2000); // Chờ 1 giây để người dùng thấy thông báo
       } else {
-        navigate('/home_page');
+        addNotification('Đăng nhập thành công, đang chuyển hướng!', 'success');
+        setTimeout(() => {
+          navigate('/home_page');
+        }, 2000); // Chờ 1 giây để người dùng thấy thông báo
       }
   
     } catch (err) {
-      setError("Tên đăng nhập hoặc mật khẩu chưa chính xác" || 'Đăng nhập thất bại. Vui lòng thử lại.');
+      addNotification("Tên đăng nhập hoặc mật khẩu chưa chính xác, vui lòng nhập lại!", 'error');
     } finally {
       setLoading(false);
     }
@@ -88,18 +97,31 @@ const Login = () => {
     <main className={styles['login-bg']}>
       <div className={styles['login-form-area']}>
         <form className={styles['login-form']} onSubmit={handleSubmit}>
+          {/* Thanh thông báo */}
+          <div className={styles.notificationContainer}>
+            {notifications.map((notif) => (
+              <div
+                key={notif.id}
+                className={`${styles.notification} ${
+                  notif.type === 'success' ? styles.success : styles.error
+                } ${notif.isExiting ? styles.exiting : ''}`}
+              >
+                <span>{notif.message}</span>
+                <button
+                  className={styles.closeButton}
+                  onClick={() => handleRemoveNotification(notif.id)}
+                >
+                  <FontAwesomeIcon icon={faTimes} />
+                </button>
+              </div>
+            ))}
+          </div>
+
           {/* Login Heading */}
           <div className={styles['login-heading']}>
             <span>Đăng Nhập</span>
             <p>Nhập thông tin đăng nhập để có quyền truy cập</p>
           </div>
-
-          {/* Hiển thị lỗi nếu có */}
-          {error && (
-            <div className={styles['error-message']}>
-              {error}
-            </div>
-          )}
 
           {/* Input Fields */}
           <div className={styles['input-box']}>
