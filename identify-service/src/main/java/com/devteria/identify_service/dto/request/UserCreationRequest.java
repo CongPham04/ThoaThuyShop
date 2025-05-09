@@ -1,10 +1,13 @@
 package com.devteria.identify_service.dto.request;
 
+import jakarta.persistence.ElementCollection;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.Set;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,4 +26,5 @@ public class UserCreationRequest {
     String firstname;
     String lastname;
     LocalDate dob;
+    Set<String> roles;
 }

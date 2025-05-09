@@ -36,15 +36,14 @@ public class UserService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     public User createRequest(UserCreationRequest request) {
-
-        if (userRepository.existsByUsername(request.getUsername()))
-            throw new AppException(ErrorCode.USER_EXISTED);
-        User user = userMapper.toUser(request);
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        HashSet<String> roles = new HashSet<>();
-        roles.add(Role.USER.name());
-        user.setRoles(roles);
-        return userRepository.save(user);
+//        if (userRepository.existsByUsername(request.getUsername()))
+//            throw new AppException(ErrorCode.USER_EXISTED);
+//        User user = userMapper.toUser(request);
+//        user.setPassword(passwordEncoder.encode(request.getPassword()));
+//        HashSet<String> roles = new HashSet<>();
+//        roles.add(Role.USER.name());
+//        user.setRoles(roles);
+//        return userRepository.save(user);
 //        if (userRepository.existsByUsername(request.getUsername())) {
 //            throw new AppException(ErrorCode.USER_EXISTED);
 //        }
@@ -61,8 +60,33 @@ public class UserService {
 //        HashSet<String> roles = new HashSet<>();
 //        roles.add(Role.USER.name());
 //        user.setRoles(roles);
-//
-//        return userRepository.save(user);
+        // Kiểm tra xem username đã tồn tại chưa
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+
+        // Ánh xạ request sang entity User
+        User user = userMapper.toUser(request);
+
+        // Mã hóa mật khẩu
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        // Xử lý vai trò: chỉ lấy vai trò đầu tiên từ Set<String> roles
+        HashSet<String> roles = new HashSet<>();
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            String role = request.getRoles().iterator().next(); // Lấy vai trò đầu tiên
+            if (Role.ADMIN.name().equalsIgnoreCase(role) || Role.USER.name().equalsIgnoreCase(role)) {
+                roles.add(role.toUpperCase()); // Chuyển vai trò thành chữ hoa để đồng nhất
+            } else {
+                roles.add(Role.USER.name()); // Mặc định là USER nếu vai trò không hợp lệ
+            }
+        } else {
+            roles.add(Role.USER.name()); // Mặc định là USER nếu không có vai trò
+        }
+        user.setRoles(roles);
+
+        // Lưu user vào cơ sở dữ liệu
+        return userRepository.save(user);
     }
     public UserResponse getMyInfo(){
         var context = SecurityContextHolder.getContext(); // Thông tin user khi login thì được lưu vào SecurityContextHolder rồi giờ chỉ cần gọi lấy thông tin ra
@@ -87,17 +111,63 @@ public class UserService {
         return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));
     }
     public UserResponse updateUser(String id, UserUpdateRequest request){
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
-//        // Kiểm tra nếu request có chứa password và không rỗng
-//        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
-//            // Mã hóa mật khẩu mới và cập nhật
+//        // Tìm user theo ID
+//        User user = userRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("User not found"));
 //
+//        // Lưu mật khẩu cũ để so sánh
+//        String originalPassword = user.getPassword();
+//
+//        // Cập nhật các trường khác (trừ password) bằng userMapper
+//        userMapper.updateUser(user, request);
+//
+//        // Kiểm tra và mã hóa password nếu có giá trị mới
+//        if (request.getPassword() != null && !request.getPassword().isEmpty() &&
+//                !request.getPassword().equals(originalPassword)) {
+//            user.setPassword(passwordEncoder.encode(request.getPassword()));
+//        } else {
+//            // Nếu không có password mới, giữ nguyên mật khẩu cũ
+//            user.setPassword(originalPassword);
 //        }
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+//
+//        // Lưu user đã cập nhật vào cơ sở dữ liệu
+//        User updatedUser = userRepository.save(user);
+//
+//        // Ánh xạ user thành UserResponse và trả về
+//        return userMapper.toUserResponse(updatedUser);
+        // Tìm user theo ID
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        // Lưu mật khẩu cũ
+        String originalPassword = user.getPassword();
+
+        // Cập nhật các trường từ request
         userMapper.updateUser(user, request);
+
+        // Xử lý vai trò: chỉ lấy vai trò đầu tiên từ Set<String> roles
+        if (request.getRoles() != null && !request.getRoles().isEmpty()) {
+            HashSet<String> roles = new HashSet<>();
+            String role = request.getRoles().iterator().next(); // Lấy vai trò đầu tiên
+            if (Role.ADMIN.name().equalsIgnoreCase(role) || Role.USER.name().equalsIgnoreCase(role)) {
+                roles.add(role.toUpperCase()); // Chuyển vai trò thành chữ hoa để đồng nhất
+            } else {
+                roles.add(Role.USER.name()); // Mặc định là USER nếu vai trò không hợp lệ
+            }
+            user.setRoles(roles);
+        }
+
+        // Cập nhật mật khẩu nếu có giá trị mới
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        } else {
+            user.setPassword(originalPassword);
+        }
+
         // Lưu user đã cập nhật vào cơ sở dữ liệu
         User updatedUser = userRepository.save(user);
-        // Ánh xạ user thành UserResponse và trả về
+
+        // Ánh xạ sang UserResponse và trả về
         return userMapper.toUserResponse(updatedUser);
 
     }

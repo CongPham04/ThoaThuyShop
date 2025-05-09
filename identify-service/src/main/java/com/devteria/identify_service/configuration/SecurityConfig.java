@@ -35,7 +35,7 @@ import java.util.List;
 @EnableWebSecurity
 @EnableMethodSecurity // Phân quyền theo method
 public class SecurityConfig implements WebMvcConfigurer {
-    private final String[] PUBLIC_ENDPOINTS = {"/users", "auth/token", "auth/introspect"};
+    private final String[] PUBLIC_ENDPOINTS = { "auth/token", "auth/introspect"};
     @Value("${jwt.signerKey}")
     private String signerKey;
     @Bean
@@ -83,6 +83,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of("http://localhost:3000")); // Cho phép frontend
+      //  configuration.setAllowedOrigins(List.of("https://82d2-2001-ee0-232-b6df-15c-2c19-2d0c-badb.ngrok-free.app")); // Cho phép frontend
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowCredentials(true);
@@ -96,6 +97,7 @@ public class SecurityConfig implements WebMvcConfigurer {
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000")
+                //.allowedOrigins("https://82d2-2001-ee0-232-b6df-15c-2c19-2d0c-badb.ngrok-free.app")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

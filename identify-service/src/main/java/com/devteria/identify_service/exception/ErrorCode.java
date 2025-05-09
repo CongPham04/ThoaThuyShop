@@ -12,7 +12,6 @@ public enum ErrorCode {
     INVALID_CREDENTIALS(1008,"Invalid credentials provided."),
     INVALID_EMAIL(1009, "Invalid email format"),
     EMAIL_EXISTED(1010, "Email already exists");
-    ;
     private int code;
     private String message;
 

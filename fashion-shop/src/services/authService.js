@@ -1,31 +1,10 @@
-import axios from 'axios';
+import api from './api';
 
-const API_URL = 'http://localhost:8080/identify'; // Thay đổi nếu backend chạy port khác
-
-// const login = async (username, password) => {
-//   try {
-//     const response = await axios.post(`${API_URL}/auth/token`, {
-//       username,
-//       password
-//     });
-    
-//     if (response.data.result.token) {
-//       // Lưu token vào localStorage hoặc cookie
-//       localStorage.setItem('userToken', response.data.result.token);
-//     }
-    
-//     return response.data;
-//   } catch (error) {
-//     console.error('Login error:', error.response?.data || error.message);
-//     throw error;
-//   }
-// };
-  
 const login = async (username, password) => {
   try {
-    const response = await axios.post(`${API_URL}/auth/token`, {
+    const response = await api.post('/auth/token', {
       username,
-      password
+      password,
     });
 
     if (!response.data.result) {
@@ -33,39 +12,37 @@ const login = async (username, password) => {
     }
 
     const { token, role } = response.data.result;
-    
+
     if (token) {
       localStorage.setItem('userToken', token);
-      // Đảm bảo role tồn tại trước khi lưu
       if (role) {
-        localStorage.setItem('userRole', role.toUpperCase()); // Chuẩn hóa role thành chữ hoa
+        localStorage.setItem('userRole', role.toUpperCase());
       }
     }
 
-    return { ...response.data, role }; // Trả về cả role trong response
+    return { ...response.data, role };
   } catch (error) {
     console.error('Login error:', error.response?.data || error.message);
     throw error;
   }
 };
-  
 
-// const getMyInfo = async () => {
-//   const token = localStorage.getItem('userToken');
-  
-//   try {
-//     const response = await axios.get(`${API_URL}/users/myInfo`, {
-//       headers: {
-//         'Authorization': `Bearer ${token}`
-//       }
-//     });
-//     return response.data;
-//   } catch (error) {
-//     console.error('Get user info error:', error.response?.data || error.message);
-//     throw error;
-//   }
-// };
+const register = async (data) => {
+  try {
+    const response = await api.post('/auth/register', data);
+
+    if (!response.data.result) {
+      throw new Error('Invalid response format');
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error('Register error:', error.response?.data || error.message);
+    throw error;
+  }
+};
 
 export default {
-  login
+  login,
+  register
 };

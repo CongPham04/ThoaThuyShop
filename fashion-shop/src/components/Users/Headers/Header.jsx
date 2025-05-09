@@ -36,7 +36,7 @@ const Header = () => {
                       <li className={styles.textList}><a href="#">Theo dõi đơn hàng của bạn</a></li>
                     </ul>
                     <ul className={styles.headerSocial}>
-                      <li><a href="#"><FontAwesomeIcon icon={faFacebookF} /></a></li>
+                      <li><a href="https://www.facebook.com/nha.may.thoa.thuy"><FontAwesomeIcon icon={faFacebookF} /></a></li>
                       <li><a href="#"><FontAwesomeIcon icon={faInstagram} /></a></li>
                       <li><a href="#"><FontAwesomeIcon icon={faTwitter} /></a></li>
                       <li><a href="#"><FontAwesomeIcon icon={faLinkedinIn} /></a></li>

@@ -3,12 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
   faPlus, faEdit, faTrash, faSearch, 
-  faSort, faSortUp, faSortDown, faTimes, faSpinner, 
-  faTruckLoading
+  faSort, faSortUp, faSortDown, faTimes, faSpinner
 } from '@fortawesome/free-solid-svg-icons';
 import MainDashboard from '../../layouts/Dashboard/MainDashboard';
 import styles from './Customer.module.css';
-import axios from 'axios';
+import api from '../../services/api';
 
 const Customer = () => {
   const [customers, setCustomers] = useState([]);
@@ -16,36 +15,23 @@ const Customer = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'asc' });
   const [editingCustomer, setEditingCustomer] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const navigate = useNavigate();
 
-  // Form state including password
   const [formData, setFormData] = useState({
     username: '',
     firstname: '',
     lastname: '',
     dob: '',
-    password: '', // Thêm trường password
-    roles: []
+    password: '',
+    confirmPassword: '',
+    roles: [],
   });
 
-  // Retrieve token from localStorage
-  const token = localStorage.getItem('userToken');
-  console.log('Token:', token);
-
-  // Create axios instance with token
-  const api = axios.create({
-    baseURL: 'http://localhost:8080/identify',
-    headers: {
-      'Authorization': token ? `Bearer ${token}` : '',
-      'Content-Type': 'application/json',
-    },
-  });
-
-  // Hàm thêm thông báo
   const addNotification = (message, type = 'success') => {
-    setNotifications([]); // Xóa tất cả thông báo hiện tại
+    setNotifications([]);
     const id = Date.now();
     setNotifications([{ id, message, type, isExiting: false }]);
 
@@ -54,7 +40,6 @@ const Customer = () => {
     }, 6000);
   };
 
-  // Hàm xử lý xóa thông báo với hiệu ứng
   const handleRemoveNotification = (id) => {
     setNotifications((prev) =>
       prev.map((notif) =>
@@ -67,10 +52,23 @@ const Customer = () => {
     }, 300);
   };
 
-  // Fetch customers from API
+  const translateErrorMessage = (message) => {
+    const translations = {
+      'Username already exists': 'Tên người dùng đã tồn tại',
+      'Email already exists': 'Email đã tồn tại',
+      'Invalid password': 'Mật khẩu không hợp lệ',
+      'User not found': 'Không tìm thấy người dùng',
+      'Internal Server Error': 'Lỗi máy chủ',
+      'Password must be at least 8 characters': 'Mật khẩu phải có ít nhất 8 ký tự',
+    };
+  
+    return translations[message] || 'Đã xảy ra lỗi không xác định';
+  };
+
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
+        const token = localStorage.getItem('userToken');
         if (!token) {
           addNotification('Không tìm thấy token. Vui lòng đăng nhập.', 'error');
           setLoading(false);
@@ -82,21 +80,14 @@ const Customer = () => {
         setCustomers(response.data);
         setLoading(false);
       } catch (err) {
-        if (err.response?.status === 401) {
-          navigate('/login');
-          addNotification('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.', 'error');
-          localStorage.removeItem('userToken');
-        } else {
-          addNotification('Lỗi: Không lấy được dữ liệu!', 'error');
-        }
+        addNotification('Lỗi: Không lấy được dữ liệu! Kiểm tra lại máy chủ', 'error');
         setLoading(false);
       }
     };
 
     fetchCustomers();
-  }, [token, navigate]);
+  }, [navigate]);
 
-  // Handle sort
   const requestSort = (key) => {
     let direction = 'asc';
     if (sortConfig.key === key && sortConfig.direction === 'asc') {
@@ -105,7 +96,6 @@ const Customer = () => {
     setSortConfig({ key, direction });
   };
 
-  // Apply sorting
   const sortedCustomers = React.useMemo(() => {
     let sortableItems = [...customers];
     if (sortConfig.key) {
@@ -122,71 +112,82 @@ const Customer = () => {
     return sortableItems;
   }, [customers, sortConfig]);
 
-  // Filter by search term
-  const filteredCustomers = sortedCustomers.filter(customer => 
+  const filteredCustomers = sortedCustomers.filter((customer) =>
     customer.username.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.firstname.toLowerCase().includes(searchTerm.toLowerCase()) ||
     customer.lastname.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
   };
 
-  // Handle role changes
   const handleRoleChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData(prev => ({
+    const { value } = e.target;
+    setFormData((prev) => ({
       ...prev,
-      roles: checked 
-        ? [...prev.roles, value] 
-        : prev.roles.filter(role => role !== value)
+      roles: [value],
     }));
   };
-
-  // Submit form (create/update)
-  const handleSubmit = async (e) => {
+  const handleAddSubmit = async (e) => {
     e.preventDefault();
+    if (formData.password !== formData.confirmPassword) {
+      addNotification('Mật khẩu và xác nhận mật khẩu không khớp!', 'error');
+      return;
+    }
+
     try {
-      if (editingCustomer) {
-        await api.put(`/users/${editingCustomer.id}`, {
-          ...formData,
-          password: formData.password || editingCustomer.password // Giữ password cũ nếu không thay đổi
-        });
-        addNotification('Cập nhật khách hàng thành công!', 'success');
-      } else {
-        await api.post('/users', formData);
-        addNotification('Thêm khách hàng thành công!', 'success');
-      }
+      const { confirmPassword, ...dataToSubmit } = formData;
+      await api.post('/users/addUser', dataToSubmit);
+      addNotification('Thêm thành công!', 'success');
       const response = await api.get('/users/allUsers');
       setCustomers(response.data);
-      setIsModalOpen(false);
+      setIsAddModalOpen(false);
+      setFormData({
+        username: '',
+        firstname: '',
+        lastname: '',
+        dob: '',
+        password: '',
+        confirmPassword: '',
+        roles: [],
+      });
+    } catch (err) {
+      const rawMessage = err.response?.data?.message || err.message;
+      addNotification('Lỗi: ' + translateErrorMessage(rawMessage), 'error');
+    }
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/users/${editingCustomer.id}`, {
+        ...formData,
+        password: formData.password || editingCustomer.password,
+      });
+      addNotification('Cập nhật thành công!', 'success');
+      const response = await api.get('/users/allUsers');
+      setCustomers(response.data);
+      setIsEditModalOpen(false);
       setEditingCustomer(null);
       setFormData({
         username: '',
         firstname: '',
         lastname: '',
         dob: '',
-        password: '', // Reset password
-        roles: []
+        password: '',
+        confirmPassword: '',
+        roles: [],
       });
     } catch (err) {
-      if (err.response?.status === 401) {
-        addNotification('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.', 'error');
-        localStorage.removeItem('userToken');
-        navigate('/login');
-      } else {
-        addNotification('Lỗi: ' + (err.response?.data?.message || err.message), 'error');
-      }
+      addNotification('Lỗi: ' + (err.response?.data?.message || err.message), 'error');
     }
   };
 
-  // Edit customer
   const handleEdit = (customer) => {
     setEditingCustomer(customer);
     setFormData({
@@ -194,35 +195,55 @@ const Customer = () => {
       firstname: customer.firstname,
       lastname: customer.lastname,
       dob: customer.dob ? customer.dob.toString().split('T')[0] : '',
-      password: '', // Không hiển thị password cũ, để người dùng nhập lại nếu muốn thay đổi
-      roles: [...customer.roles]
+      password: '',
+      confirmPassword: '',
+      roles: [...customer.roles],
     });
-    setIsModalOpen(true);
+    setIsEditModalOpen(true);
   };
 
-  // Delete customer
   const handleDelete = async (id) => {
-    if (window.confirm('Bạn có chắc chắn muốn xóa khách hàng này không?')) {
+    if (window.confirm('Bạn có chắc chắn muốn xóa tài khoản này không?')) {
       try {
         await api.delete(`/users/${id}`);
-        setCustomers(customers.filter(customer => customer.id !== id));
+        setCustomers(customers.filter((customer) => customer.id !== id));
         addNotification('Xóa khách hàng thành công!', 'success');
       } catch (err) {
-        if (err.response?.status === 401) {
-          addNotification('Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.', 'error');
-          localStorage.removeItem('userToken');
-          navigate('/login');
-        } else {
-          addNotification('Lỗi: ' + err.message, 'error');
-        }
+        addNotification('Lỗi: ' + (err.response?.data?.message || err.message), 'error');
       }
     }
   };
 
-  // Get sort icon
   const getSortIcon = (key) => {
     if (sortConfig.key !== key) return faSort;
     return sortConfig.direction === 'asc' ? faSortUp : faSortDown;
+  };
+
+  const handleAddModalClose = () => {
+    setIsAddModalOpen(false);
+    setFormData({
+      username: '',
+      firstname: '',
+      lastname: '',
+      dob: '',
+      password: '',
+      confirmPassword: '',
+      roles: [],
+    });
+  };
+
+  const handleEditModalClose = () => {
+    setIsEditModalOpen(false);
+    setEditingCustomer(null);
+    setFormData({
+      username: '',
+      firstname: '',
+      lastname: '',
+      dob: '',
+      password: '',
+      confirmPassword: '',
+      roles: [],
+    });
   };
 
   if (loading) return (
@@ -237,7 +258,6 @@ const Customer = () => {
   return (
     <MainDashboard>
       <div className={styles.container}>
-        {/* Thanh thông báo */}
         <div className={styles.notificationContainer}>
           {notifications.map((notif) => (
             <div
@@ -261,7 +281,7 @@ const Customer = () => {
           <h1>Thông Tin Khách Hàng</h1>
           <button 
             className={styles.addButton}
-            onClick={() => setIsModalOpen(true)}
+            onClick={() => setIsAddModalOpen(true)}
           >
             <FontAwesomeIcon icon={faPlus} /> Thêm Khách Hàng
           </button>
@@ -272,7 +292,7 @@ const Customer = () => {
             <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
             <input
               type="text"
-              placeholder="Tìm kiếm khách hàng..."
+              placeholder="Tìm kiếm tên đăng nhập..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className={styles.searchInput}
@@ -285,7 +305,7 @@ const Customer = () => {
             <thead>
               <tr>
                 <th onClick={() => requestSort('username')}>
-                  Tài Khoản <FontAwesomeIcon icon={getSortIcon('username')} />
+                  Tên Đăng Nhập <FontAwesomeIcon icon={getSortIcon('username')} />
                 </th>
                 <th onClick={() => requestSort('firstname')}>
                   Tên <FontAwesomeIcon icon={getSortIcon('firstname')} />
@@ -297,13 +317,13 @@ const Customer = () => {
                   Ngày Sinh <FontAwesomeIcon icon={getSortIcon('dob')} />
                 </th>
                 <th>Vai Trò</th>
-                <th>Mật Khẩu</th> {/* Thêm cột mật khẩu */}
+                <th>Mật Khẩu</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               {filteredCustomers.length > 0 ? (
-                filteredCustomers.map(customer => (
+                filteredCustomers.map((customer) => (
                   <tr key={customer.id}>
                     <td>{customer.username}</td>
                     <td>{customer.firstname}</td>
@@ -311,14 +331,14 @@ const Customer = () => {
                     <td>{customer.dob ? customer.dob.toString().split('T')[0] : ''}</td>
                     <td>
                       <div className={styles.rolesContainer}>
-                        {customer.roles.map(role => (
+                        {customer.roles.map((role) => (
                           <span key={role} className={styles.roleBadge}>
                             {role}
                           </span>
                         ))}
                       </div>
                     </td>
-                    <td>{customer.password ? '********' : ''}</td> {/* Ẩn mật khẩu */}
+                    <td>{customer.password ? '********' : ''}</td>
                     <td>
                       <button 
                         onClick={() => handleEdit(customer)}
@@ -346,12 +366,125 @@ const Customer = () => {
           </table>
         </div>
 
-        {/* Add/Edit Modal */}
-        {isModalOpen && (
+        {isAddModalOpen && (
           <div className={styles.modalOverlay}>
             <div className={styles.modal}>
-              <h2>{editingCustomer ? 'Chỉnh Sửa Khách Hàng' : 'Thêm Khách Hàng Mới'}</h2>
-              <form onSubmit={handleSubmit}>
+              <button className={styles.modalCloseButton} onClick={handleAddModalClose}>
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+              <h2>Thêm Khách Hàng Mới</h2>
+              <form onSubmit={handleAddSubmit}>
+                <div className={styles.formGroup}>
+                  <label>Tên Đăng Nhập:</label>
+                  <input
+                    type="text"
+                    name="username"
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Tên:</label>
+                  <input
+                    type="text"
+                    name="firstname"
+                    value={formData.firstname}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Họ:</label>
+                  <input
+                    type="text"
+                    name="lastname"
+                    value={formData.lastname}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Ngày Sinh:</label>
+                  <input
+                    type="date"
+                    name="dob"
+                    value={formData.dob}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Mật Khẩu:</label>
+                  <input
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Xác Nhận Mật Khẩu:</label>
+                  <input
+                    type="password"
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Vai Trò:</label>
+                  <div className={styles.rolesRadio}>
+                    <label>
+                      <input
+                        type="radio"
+                        name="role"
+                        value="ADMIN"
+                        checked={formData.roles.includes('ADMIN')}
+                        onChange={handleRoleChange}
+                        required
+                      />
+                      ADMIN
+                    </label>
+                    <label>
+                      <input
+                        type="radio"
+                        name="role"
+                        value="USER"
+                        checked={formData.roles.includes('USER')}
+                        onChange={handleRoleChange}
+                        required
+                      />
+                      USER
+                    </label>
+                  </div>
+                </div>
+                <div className={styles.modalButtons}>
+                  <button type="submit" className={styles.saveButton}>
+                    Lưu
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.cancelButton}
+                    onClick={handleAddModalClose}
+                  >
+                    Hủy
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {isEditModalOpen && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modal}>
+              <button className={styles.modalCloseButton} onClick={handleEditModalClose}>
+                <FontAwesomeIcon icon={faTimes} />
+              </button>
+              <h2>Chỉnh Sửa Khách Hàng</h2>
+              <form onSubmit={handleEditSubmit}>
                 <div className={styles.formGroup}>
                   <label>Tên Đăng Nhập:</label>
                   <input
@@ -403,22 +536,26 @@ const Customer = () => {
                 </div>
                 <div className={styles.formGroup}>
                   <label>Vai Trò:</label>
-                  <div className={styles.rolesCheckbox}>
+                  <div className={styles.rolesRadio}>
                     <label>
                       <input
-                        type="checkbox"
+                        type="radio"
+                        name="role"
                         value="ADMIN"
                         checked={formData.roles.includes('ADMIN')}
                         onChange={handleRoleChange}
+                        required
                       />
                       ADMIN
                     </label>
                     <label>
                       <input
-                        type="checkbox"
+                        type="radio"
+                        name="role"
                         value="USER"
                         checked={formData.roles.includes('USER')}
                         onChange={handleRoleChange}
+                        required
                       />
                       USER
                     </label>
@@ -426,23 +563,12 @@ const Customer = () => {
                 </div>
                 <div className={styles.modalButtons}>
                   <button type="submit" className={styles.saveButton}>
-                    {editingCustomer ? 'Cập Nhật' : 'Lưu'}
+                    Cập Nhật
                   </button>
                   <button
                     type="button"
                     className={styles.cancelButton}
-                    onClick={() => {
-                      setIsModalOpen(false);
-                      setEditingCustomer(null);
-                      setFormData({
-                        username: '',
-                        firstname: '',
-                        lastname: '',
-                        dob: '',
-                        password: '',
-                        roles: []
-                      });
-                    }}
+                    onClick={handleEditModalClose}
                   >
                     Hủy
                   </button>

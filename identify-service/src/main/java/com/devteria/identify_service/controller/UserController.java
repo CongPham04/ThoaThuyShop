@@ -23,9 +23,10 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+//@CrossOrigin(origins = "https://82d2-2001-ee0-232-b6df-15c-2c19-2d0c-badb.ngrok-free.app", allowCredentials = "true")
 public class UserController {
     UserService userService;
-    @PostMapping
+    @PostMapping("/addUser")
     ApiRespose<User> addUser(@RequestBody @Valid UserCreationRequest request) {
         ApiRespose<User> respose = new ApiRespose<>();
         respose.setResult(userService.createRequest(request));

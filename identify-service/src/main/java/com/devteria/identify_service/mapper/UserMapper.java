@@ -14,5 +14,6 @@ public interface UserMapper {
 //    @Mapping(source = "firstName", target = "lastName") lastName = firtName
 //    @Mapping(target = "lastName", ignore = true) -> lastName=null
     UserResponse toUserResponse(User user);
+    @Mapping(target = "password", ignore = true) // Bỏ qua ánh xạ password trong update
     void updateUser(@MappingTarget User user, UserUpdateRequest userUpdateRequest);
 }

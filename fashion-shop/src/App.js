@@ -7,6 +7,7 @@ import Login from "./pages/Login/Login";
 import PrivateRoute from './components/Dashboard/PrivateRoute';
 import Dashboard from './pages/Admin/Dashboard'; 
 import Customer from './pages/Admin/Customer';
+import Regis from './pages/Register/Register';
 function App() {
   return (
   // <Router>
@@ -28,6 +29,7 @@ function App() {
       <Routes>
         <Route path='/' element={<Home/>}/>           
         <Route path='/login' element={<Login/>} ></Route>
+        <Route path='/register' element={<Regis/>} ></Route>
         <Route
           path='/dashboard'
           element={

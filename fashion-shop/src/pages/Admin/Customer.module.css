@@ -37,33 +37,19 @@
 }
 
 .searchBar {
-  /* display: flex;
-  align-items: center;
-  background-color: #f8f9fa;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 5px 10px;
-  width: 300px; */
   position: relative;
-    width: 250px;
+  width: 250px;
 }
 
 .searchIcon {
-  /* margin-right: 10px;
-  color: #888; */
   position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #6c757d;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
 }
 
 .searchInput {
-  /* border: none;
-  background: none;
-  outline: none;
-  width: 100%;
-  font-size: 14px; */
   width: 100%;
   padding: 0.5rem 1rem 0.5rem 2.5rem;
   border: 1px solid #ddd;
@@ -71,6 +57,7 @@
   outline: none;
   font-size: 0.9rem;
 }
+
 .searchInput:focus {
   border-color: #4e73df;
 }
@@ -125,7 +112,7 @@
   border: none;
   background: none;
   cursor: pointer;
-  margin-right: 10px;
+  margin-right: 30px;
   font-size: 16px;
 }
 
@@ -166,15 +153,61 @@
 .modal {
   background-color: white;
   padding: 20px;
-  border-radius: 8px;
-  width: 400px;
+  width: 500px;
   max-width: 90%;
+  min-height: 570px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 30px;
+  margin: 20px 0;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 30px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.modal {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
 }
 
 .modal h2 {
   margin-top: 0;
-  font-size: 20px;
+  font-size: 25px;
   color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.modalCloseButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #555;
+  transition: color 0.2s ease;
+}
+
+.modalCloseButton:hover {
+  color: #dc3545; /* Màu đỏ khi hover, tương tự deleteButton */
 }
 
 .formGroup {
@@ -194,14 +227,15 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
+  box-sizing: border-box;
 }
 
-.rolesCheckbox {
+.rolesRadio {
   display: flex;
   gap: 15px;
 }
 
-.rolesCheckbox label {
+.rolesRadio label {
   display: flex;
   align-items: center;
   gap: 5px;
@@ -321,7 +355,7 @@
 .loadingIcon {
   font-size: 40px;
   color: #007bff;
-  animation: spin 1s linear infinite; /* Hiệu ứng quay */
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {

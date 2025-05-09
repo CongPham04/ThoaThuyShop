@@ -109,6 +109,7 @@ public class AuthenticationService {
                 .build();
 
     }
+
     private String buildScope(User user) {
         StringJoiner stringJoiner = new StringJoiner(" ");
         if(user.getRoles() != null && !user.getRoles().isEmpty())
