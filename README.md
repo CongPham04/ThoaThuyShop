@@ -1,7 +1,7 @@
 ThoaThuyShop (FullStack)
 This is a fullstack e-commerce web application built with:
 
-Frontend: React.js, Bootstrap 5, Axios
+Frontend: React.js, Bootstrap(css), Axios
 
 Backend: Spring Boot, Spring Security, JWT
 
