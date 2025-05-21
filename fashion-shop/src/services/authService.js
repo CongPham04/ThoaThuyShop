@@ -7,20 +7,22 @@ const login = async (username, password) => {
       password,
     });
 
-    if (!response.data.result) {
+    if (!response.data.data) {
       throw new Error('Invalid response format');
     }
 
-    const { token, role } = response.data.result;
+    const { token, user } = response.data.data;
 
-    if (token) {
+    if (token && user) {
       localStorage.setItem('userToken', token);
-      if (role) {
-        localStorage.setItem('userRole', role.toUpperCase());
-      }
+      localStorage.setItem('userInfo', JSON.stringify(user));
+      // localStorage.setItem('userRole', Array.isArray(user.roles) && user.roles.length > 0 ? user.roles[0] : '');
+    } else {
+      throw new Error('Missing token or user data');
     }
+    console.log("roles", Array.isArray(user.roles) && user.roles.length > 0 ? user.roles[0] : '');
 
-    return { ...response.data, role };
+    return response.data;
   } catch (error) {
     console.error('Login error:', error.response?.data || error.message);
     throw error;
@@ -31,7 +33,7 @@ const register = async (data) => {
   try {
     const response = await api.post('/auth/register', data);
 
-    if (!response.data.result) {
+    if (!response.data.data) {
       throw new Error('Invalid response format');
     }
 

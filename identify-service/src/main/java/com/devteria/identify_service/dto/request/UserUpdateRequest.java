@@ -18,5 +18,6 @@ public class UserUpdateRequest {
     String firstname;
     String lastname;
     LocalDate dob; //Ngay sinh
+    String gender;
     Set<String> roles;
 }

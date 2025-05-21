@@ -3,7 +3,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
-  faBox, faUsers, faCreditCard, faChartLine, 
+  faBox, faUsers,faList, faCreditCard, faChartLine, 
   faBullhorn, faHistory, faLifeRing, faCog, faTachometerAlt 
 } from '@fortawesome/free-solid-svg-icons';
 import styles from './Sidebar.module.css';
@@ -16,8 +16,9 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: 'Overview', icon: faTachometerAlt },
-    // { name: 'Product', icon: faBox },
     { name: 'Customer', icon: faUsers },
+    { name: 'Category', icon: faList },
+    { name: 'Product', icon: faBox },
     // { name: 'Transaction', icon: faCreditCard },
     // { name: 'Statistics', icon: faChartLine },
     // { name: 'Campaign', icon: faBullhorn },

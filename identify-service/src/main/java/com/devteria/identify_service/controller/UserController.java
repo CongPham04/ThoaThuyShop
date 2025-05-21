@@ -1,6 +1,6 @@
 package com.devteria.identify_service.controller;
 
-import com.devteria.identify_service.dto.request.ApiRespose;
+import com.devteria.identify_service.dto.request.ApiResponse;
 import com.devteria.identify_service.dto.request.UserCreationRequest;
 import com.devteria.identify_service.dto.request.UserUpdateRequest;
 import com.devteria.identify_service.dto.response.UserResponse;
@@ -11,7 +11,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,13 +22,13 @@ import java.util.List;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Slf4j
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
-//@CrossOrigin(origins = "https://82d2-2001-ee0-232-b6df-15c-2c19-2d0c-badb.ngrok-free.app", allowCredentials = "true")
+//@CrossOrigin(origins = "https://e392-113-185-53-88.ngrok-free.app", allowCredentials = "true")
 public class UserController {
     UserService userService;
     @PostMapping("/addUser")
-    ApiRespose<User> addUser(@RequestBody @Valid UserCreationRequest request) {
-        ApiRespose<User> respose = new ApiRespose<>();
-        respose.setResult(userService.createRequest(request));
+    ApiResponse<User> addUser(@RequestBody @Valid UserCreationRequest request) {
+        ApiResponse<User> respose = new ApiResponse<>();
+        respose.setData(userService.createRequest(request));
         return respose;
     }
     @GetMapping("/allUsers")
@@ -40,15 +39,15 @@ public class UserController {
         return userService.getUsers();
     }
     @GetMapping("/{userId}")
-    ApiRespose<UserResponse> getUser(@PathVariable("userId") String userId) {
-        return ApiRespose.<UserResponse>builder()
-                .result(userService.getUser(userId))
+    ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getUser(userId))
                 .build();
     }
     @GetMapping("/myInfo") // lấy thông tin user khi login
-    ApiRespose<UserResponse> getMyInfo() {
-        return ApiRespose.<UserResponse>builder()
-                .result(userService.getMyInfo())
+    ApiResponse<UserResponse> getMyInfo() {
+        return ApiResponse.<UserResponse>builder()
+                .data(userService.getMyInfo())
                 .build();
     }
     @PutMapping("/{userId}")

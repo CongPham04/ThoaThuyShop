@@ -36,38 +36,12 @@ public class UserService {
     UserMapper userMapper;
     PasswordEncoder passwordEncoder;
     public User createRequest(UserCreationRequest request) {
-//        if (userRepository.existsByUsername(request.getUsername()))
-//            throw new AppException(ErrorCode.USER_EXISTED);
-//        User user = userMapper.toUser(request);
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
-//        HashSet<String> roles = new HashSet<>();
-//        roles.add(Role.USER.name());
-//        user.setRoles(roles);
-//        return userRepository.save(user);
-//        if (userRepository.existsByUsername(request.getUsername())) {
-//            throw new AppException(ErrorCode.USER_EXISTED);
-//        }
-//        // Chỉ kiểm tra email nếu được cung cấp
-//        if (request.getEmail() != null && !request.getEmail().isEmpty()) {
-//            if (userRepository.existsByEmail(request.getEmail())) {
-//                throw new AppException(ErrorCode.EMAIL_EXISTED);
-//            }
-//        }
-//
-//        User user = userMapper.toUser(request);
-//        user.setPassword(passwordEncoder.encode(request.getPassword()));
-//
-//        HashSet<String> roles = new HashSet<>();
-//        roles.add(Role.USER.name());
-//        user.setRoles(roles);
         // Kiểm tra xem username đã tồn tại chưa
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USER_EXISTED);
         }
-
         // Ánh xạ request sang entity User
         User user = userMapper.toUser(request);
-
         // Mã hóa mật khẩu
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 

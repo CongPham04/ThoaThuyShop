@@ -58,8 +58,11 @@ const Login = () => {
       } else {
         localStorage.removeItem('rememberMe');
       }
+      
+      // const role = response.role || localStorage.getItem('userRole');
+      const role = Array.isArray(response.data.user.roles) && response.data.user.roles.length > 0 ? response.data.user.roles[0] : '' || localStorage.getItem('userRole');
 
-      const role = response.role || localStorage.getItem('userRole');
+      console.log('role', role);
 
       addNotification('Đăng nhập thành công, đang chuyển hướng!', 'success');
       setTimeout(() => {
@@ -67,6 +70,8 @@ const Login = () => {
           navigate('/dashboard');
         } else {
           navigate('/home_page');
+          // localStorage.removeItem('userToken');
+          // navigate('/login');
         }
       }, 2000);
     } catch (err) {
@@ -75,7 +80,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-
   const handleSocialLogin = (provider) => {
     console.log(`Logging in with ${provider}`);
   };
@@ -170,7 +174,7 @@ const Login = () => {
               Chưa có tài khoản? <a href="/register">Đăng ký</a> tại đây!
             </p>
             <button type="submit" className={styles['submit-btn3']} disabled={loading}>
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? 'Đang Đăng Nhập...' : 'Đăng Nhập'}
             </button>
           </div>
 

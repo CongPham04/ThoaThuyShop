@@ -25,6 +25,7 @@ const Customer = () => {
     firstname: '',
     lastname: '',
     dob: '',
+    gender: '', // Initialize as empty string to avoid null
     password: '',
     confirmPassword: '',
     roles: [],
@@ -100,10 +101,12 @@ const Customer = () => {
     let sortableItems = [...customers];
     if (sortConfig.key) {
       sortableItems.sort((a, b) => {
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const aValue = a[sortConfig.key] || ''; // Handle null/undefined for sorting
+        const bValue = b[sortConfig.key] || '';
+        if (aValue < bValue) {
           return sortConfig.direction === 'asc' ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (aValue > bValue) {
           return sortConfig.direction === 'asc' ? 1 : -1;
         }
         return 0;
@@ -133,6 +136,7 @@ const Customer = () => {
       roles: [value],
     }));
   };
+
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     if (formData.password !== formData.confirmPassword) {
@@ -142,6 +146,8 @@ const Customer = () => {
 
     try {
       const { confirmPassword, ...dataToSubmit } = formData;
+      // Log data to verify gender is included
+      console.log('Sending data to POST /users/addUser:', dataToSubmit);
       await api.post('/users/addUser', dataToSubmit);
       addNotification('Thêm thành công!', 'success');
       const response = await api.get('/users/allUsers');
@@ -152,6 +158,7 @@ const Customer = () => {
         firstname: '',
         lastname: '',
         dob: '',
+        gender: '',
         password: '',
         confirmPassword: '',
         roles: [],
@@ -165,10 +172,13 @@ const Customer = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      await api.put(`/users/${editingCustomer.id}`, {
+      const dataToSubmit = {
         ...formData,
-        password: formData.password || editingCustomer.password,
-      });
+        password: formData.password || undefined, // Send undefined if password is empty
+      };
+      // Log data to verify gender is included
+      console.log('Sending data to PUT /users/', editingCustomer.id, ':', dataToSubmit);
+      await api.put(`/users/${editingCustomer.id}`, dataToSubmit);
       addNotification('Cập nhật thành công!', 'success');
       const response = await api.get('/users/allUsers');
       setCustomers(response.data);
@@ -179,6 +189,7 @@ const Customer = () => {
         firstname: '',
         lastname: '',
         dob: '',
+        gender: '',
         password: '',
         confirmPassword: '',
         roles: [],
@@ -191,13 +202,14 @@ const Customer = () => {
   const handleEdit = (customer) => {
     setEditingCustomer(customer);
     setFormData({
-      username: customer.username,
-      firstname: customer.firstname,
-      lastname: customer.lastname,
+      username: customer.username || '',
+      firstname: customer.firstname || '',
+      lastname: customer.lastname || '',
       dob: customer.dob ? customer.dob.toString().split('T')[0] : '',
+      gender: customer.gender || '', // Convert null to empty string
       password: '',
       confirmPassword: '',
-      roles: [...customer.roles],
+      roles: [...(customer.roles || [])],
     });
     setIsEditModalOpen(true);
   };
@@ -226,6 +238,7 @@ const Customer = () => {
       firstname: '',
       lastname: '',
       dob: '',
+      gender: '',
       password: '',
       confirmPassword: '',
       roles: [],
@@ -240,6 +253,7 @@ const Customer = () => {
       firstname: '',
       lastname: '',
       dob: '',
+      gender: '',
       password: '',
       confirmPassword: '',
       roles: [],
@@ -316,6 +330,9 @@ const Customer = () => {
                 <th onClick={() => requestSort('dob')}>
                   Ngày Sinh <FontAwesomeIcon icon={getSortIcon('dob')} />
                 </th>
+                <th onClick={() => requestSort('gender')}>
+                  Giới Tính <FontAwesomeIcon icon={getSortIcon('gender')} />
+                </th>
                 <th>Vai Trò</th>
                 <th>Mật Khẩu</th>
                 <th></th>
@@ -329,6 +346,11 @@ const Customer = () => {
                     <td>{customer.firstname}</td>
                     <td>{customer.lastname}</td>
                     <td>{customer.dob ? customer.dob.toString().split('T')[0] : ''}</td>
+                    <td>
+                      {customer.gender === 'MALE' ? 'Nam' : 
+                       customer.gender === 'FEMALE' ? 'Nữ' : 
+                       customer.gender === 'OTHER' ? 'Khác' : ''}
+                    </td>
                     <td>
                       <div className={styles.rolesContainer}>
                         {customer.roles.map((role) => (
@@ -357,7 +379,7 @@ const Customer = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="7" className={styles.noResults}>
+                  <td colSpan="8" className={styles.noResults}>
                     Không tìm thấy khách hàng
                   </td>
                 </tr>
@@ -405,7 +427,7 @@ const Customer = () => {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Ngày Sinh:</label>
+                  <label>Ngày sinh:</label>
                   <input
                     type="date"
                     name="dob"
@@ -414,7 +436,20 @@ const Customer = () => {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Mật Khẩu:</label>
+                  <label>Giới tính:</label>
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                  >
+                    <option value="">Chọn giới tính</option>
+                    <option value="MALE">Nam</option>
+                    <option value="FEMALE">Nữ</option>
+                    <option value="OTHER">Khác</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Mật khẩu mới:</label>
                   <input
                     type="password"
                     name="password"
@@ -424,7 +459,7 @@ const Customer = () => {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Xác Nhận Mật Khẩu:</label>
+                  <label>Xác nhận mật khẩu mới:</label>
                   <input
                     type="password"
                     name="confirmPassword"
@@ -525,13 +560,26 @@ const Customer = () => {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label>Mật Khẩu:</label>
+                  <label>Giới tính:</label>
+                  <select
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleInputChange}
+                  >
+                    <option value="">Chọn giới tính</option>
+                    <option value="MALE">Nam</option>
+                    <option value="FEMALE">Nữ</option>
+                    <option value="OTHER">Khác</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Mật khẩu mới:</label>
                   <input
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="Nhập mật khẩu (bỏ trống nếu không thay đổi)"
+                    placeholder="Nhập mật khẩu mới (Bỏ trống nếu không thay đổi)"
                   />
                 </div>
                 <div className={styles.formGroup}>

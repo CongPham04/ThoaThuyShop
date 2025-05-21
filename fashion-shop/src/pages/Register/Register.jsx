@@ -10,6 +10,7 @@ const Register = () => {
     firstname: '',
     lastname: '',
     dob: '',
+    gender: '',
     password: '',
     confirmPassword: '',
   });
@@ -45,8 +46,8 @@ const Register = () => {
     try {
       const { confirmPassword, ...dataToSubmit } = formData;
       await authService.register(dataToSubmit);
-      addNotification('Đăng ký thành công! Chuyển hướng đến đăng nhập...', 'success');
-      setTimeout(() => navigate('/login'), 1000);
+      addNotification('Đăng ký thành công!', 'success');
+      setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       addNotification(
         err.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.',
@@ -98,6 +99,21 @@ const Register = () => {
                 </div>
               </div>
             </div>
+            <div className={styles['single-input-fields']}>
+                <label htmlFor="gender" className="form-label">Giới tính</label>
+                <select
+                    name="gender"
+                    id="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    className="form-control"
+                >
+                    <option value="">Chọn giới tính</option>
+                    <option value="MALE">Nam</option>
+                    <option value="FEMALE">Nữ</option>
+                    <option value="OTHER">Khác</option>
+                </select>
+                </div>
             <div className={styles['single-input-fields']}>
               <label htmlFor="dob" className="form-label">Ngày sinh</label>
               <input

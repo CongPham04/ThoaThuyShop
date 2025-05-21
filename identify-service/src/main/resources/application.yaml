@@ -16,3 +16,5 @@ spring:
     show-sql: true
 jwt:
   signerKey: "vqK0Iyn3p7hlP5Cw7Mgd9slRdcJbznOjKO1m4s1M6o/hwvtPDS9toxMMvGS3YTZA"
+# Custom config cho file storage
+

@@ -1,0 +1,394 @@
+/* Product.module.css */
+.container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 24px;
+  color: #333;
+}
+
+.addButton {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.addButton:hover {
+  background-color: #218838;
+}
+
+.filterContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 20px;
+}
+
+.collectionFilter,
+.categoryFilter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.collectionFilter label,
+.categoryFilter label {
+  font-weight: bold;
+  color: #555;
+}
+
+.dropdown {
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 200px;
+}
+
+.dropdown:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.searchBar {
+  position: relative;
+  width: 250px;
+}
+
+.searchIcon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+}
+
+.searchInput {
+  width: 100%;
+  padding: 0.5rem 1rem 0.5rem 2.5rem;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.searchInput:focus {
+  border-color: #4e73df;
+}
+
+.tableContainer {
+  overflow-x: auto;
+}
+
+.productTable {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.productTable th,
+.productTable td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.productTable th {
+  background-color: #f8f9fa;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.productTable th:hover {
+  background-color: #e9ecef;
+}
+
+.productTable td {
+  color: #555;
+}
+
+.productImage {
+  width: 60px; /* Adjusted to 60px for better visibility */
+  height: 60px; /* Adjusted to 60px for consistency */
+  object-fit: cover; /* Maintain aspect ratio and cover the container */
+  border-radius: 5px; /* Optional: Adds a rounded corner */
+  vertical-align: middle; /* Aligns the image properly in the table cell */
+}
+
+.editButton,
+.deleteButton {
+  border: none;
+  background: none;
+  cursor: pointer;
+  margin-right: 30px;
+  font-size: 16px;
+}
+
+.editButton {
+  color: #007bff;
+}
+
+.editButton:hover {
+  color: #0056b3;
+}
+
+.deleteButton {
+  color: #dc3545;
+}
+
+.deleteButton:hover {
+  color: #b02a37;
+}
+
+.noResults {
+  text-align: center;
+  color: #888;
+  padding: 20px;
+}
+
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: white;
+  padding: 20px;
+  width: 500px;
+  max-width: 90%;
+  min-height: 500px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal::-webkit-scrollbar {
+  width: 10px;
+}
+
+.modal::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 30px;
+  margin: 20px 0;
+}
+
+.modal::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 30px;
+}
+
+.modal::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.modal {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.modal h2 {
+  margin-top: 0;
+  font-size: 25px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.modalCloseButton {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  color: #555;
+  transition: color 0.2s ease;
+}
+
+.modalCloseButton:hover {
+  color: #dc3545;
+}
+
+.formGroup {
+  margin-bottom: 15px;
+}
+
+.formGroup label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.formGroup input,
+.formGroup select,
+.formGroup textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.formGroup textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+.formGroup select:focus,
+.formGroup input:focus,
+.formGroup textarea:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.saveButton {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  background-color: #0056b3;
+}
+
+.cancelButton {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background-color: #5a6268;
+}
+
+.notificationContainer {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  width: 300px;
+}
+
+.notification {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  color: white;
+  font-size: 14px;
+  animation: slideIn 0.3s ease-in-out;
+}
+
+.notification.exiting {
+  animation: slideOut 0.3s ease-in-out forwards;
+}
+
+.notification.success {
+  background-color: #4a90e2;
+}
+
+.notification.error {
+  background-color: #e74c3c;
+}
+
+.closeButton {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.closeButton:hover {
+  color: #f0f0f0;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.loadingIcon {
+  font-size: 40px;
+  color: #007bff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}

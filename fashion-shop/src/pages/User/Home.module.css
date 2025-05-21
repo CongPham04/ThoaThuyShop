@@ -1,0 +1,350 @@
+/* Main */
+.main {
+  position: relative;
+}
+
+/* Slider Area */
+.sliderArea {
+  position: relative;
+}
+
+.carousel {
+  position: relative;
+  overflow: hidden;
+  height: 800px;
+}
+
+.carouselInner {
+  position: relative;
+  height: 100%;
+}
+
+.sliderItem {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s ease-in-out;
+  transform: translateX(100%);
+}
+
+.sliderItem.active {
+  transform: translateX(0);
+}
+
+.sliderItem.next {
+  transform: translateX(100%);
+}
+
+.sliderItem.prev {
+  transform: translateX(-100%);
+}
+
+.singleSlider {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* Nội dung chung cho tất cả slides */
+.heroCaption {
+  padding: 40px;
+  border-radius: 10px;
+  text-align: center;
+  transition: all 0.5s ease;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Style riêng cho slide đầu tiên */
+.sliderItem:nth-child(1) .heroCaption {
+  transform: translateX(600px);
+}
+
+/* Style riêng cho slide thứ hai */
+.sliderItem:nth-child(2) .heroCaption {
+  transform: translateX(-50px);  
+}
+.heroCaption span {
+  color: #ff3368;
+  font-size: 35px;
+  font-weight: 500;
+  margin-bottom: 15px;
+  display: block;
+  font-family: 'Dancing Script', cursive;
+}
+
+.heroCaption h1 {
+  font-size: 60px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 1.2;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.heroCaption p {
+  margin-bottom: 30px;
+  font-size: 18px;
+  line-height: 1.6;
+}
+
+.heroBtn {
+  padding: 15px 35px;
+  border-radius: 30px;
+  font-weight: 600;
+  text-transform: uppercase;
+  background-color: #ff3368;
+  color: white;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.heroBtn:hover {
+  background-color: #e62e5d;
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Nút điều hướng */
+.carouselNavigation {
+  position: relative;
+}
+
+.navButton {
+  width: 50px;
+  height: 50px;
+  background-color: #000;
+  border-radius: 50%;
+  position: absolute;
+  top: -350px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 20px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.8;
+  z-index: 10;
+}
+
+.navButton:first-child {
+  left: 30px;
+}
+
+.navButton:last-child {
+  right: 30px;
+}
+
+.navButton:hover {
+  background-color: #ff3368;
+  opacity: 1;
+  transform: translateY(-50%) scale(1.1);
+}
+
+/* Hiệu ứng pulse khi hover */
+@keyframes pulse {
+  0% { box-shadow: 0 0 0 0 rgba(255, 51, 104, 0.7); }
+  70% { box-shadow: 0 0 0 10px rgba(255, 51, 104, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(255, 51, 104, 0); }
+}
+
+.navButton:hover {
+  animation: pulse 1.5s infinite;
+}
+
+/* Items Product */
+.itemsProduct {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
+.singleItem {
+  position: relative;
+  overflow: hidden;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  height: 0;
+  padding-bottom: 100%; /* Tạo tỉ lệ 1:1 (vuông) */
+}
+
+.itemsImg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.itemsImg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Đảm bảo ảnh phủ kín không bị méo */
+  transition: all 0.5s ease;
+}
+
+.singleItem:hover .itemsImg img {
+  transform: scale(1.1); /* Giảm tốc độ zoom để trông tự nhiên hơn */
+}
+
+.itemsDetails {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.158);
+  text-align: center;
+  padding: 20px;
+  color: #fff;
+  transform: translateY(100%);
+  transition: all 0.3s ease;
+}
+
+.singleItem:hover .itemsDetails {
+  transform: translateY(0);
+}
+
+.itemsDetails h4 a {
+  color: #fff;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  display: block;
+  text-decoration: none;
+}
+
+.browseBtn {
+  color: #fff;
+  font-weight: 600;
+  text-transform: uppercase;
+  position: relative;
+  padding-right: 20px;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.3s ease;
+}
+
+.browseBtn:hover {
+  color: #ff3368;
+}
+
+.browseBtn:after {
+  position: absolute;
+  content: "";
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 10px;
+  height: 2px;
+  background: #fff;
+  transition: all 0.3s ease;
+}
+
+.browseBtn:hover:after {
+  background: #ff3368;
+  width: 15px;
+}
+
+/* Error Container */
+.errorContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+  padding: 20px;
+}
+
+.errorContainer p {
+  font-size: 18px;
+  color: #d32f2f;
+  margin-bottom: 20px;
+}
+
+.loginLink {
+  padding: 10px 20px;
+  border-radius: 5px;
+  background-color: #ff3368;
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.loginLink:hover {
+  background-color: #e62e5d;
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 1199px) {
+  .heroCaption { max-width: 550px; }
+  .heroCaption h1 { font-size: 58px; }
+}
+
+@media (max-width: 991px) {
+  .sliderArea { height: 600px; }
+  .heroCaption { padding: 30px; max-width: 450px; }
+  .heroCaption h1 { font-size: 48px; }
+  .navButton { width: 40px; height: 40px; font-size: 18px; }
+}
+
+@media (max-width: 767px) {
+  .sliderArea { height: 500px; }
+  .heroCaption { padding: 20px; max-width: 90%; }
+  .heroCaption h1 { font-size: 36px; }
+  .heroBtn { padding: 12px 30px; font-size: 14px; }
+  .itemsDetails h4 a { font-size: 18px; }
+  .singleItem { margin-bottom: 20px; }
+}
+
+@media (max-width: 575px) {
+  .heroCaption h1 { font-size: 28px; }
+  .heroCaption p { font-size: 14px; }
+  .navButton { width: 35px; height: 35px; font-size: 16px; }
+  .itemsDetails { padding: 15px; }
+}
+
+@media (max-width: 768px) {
+  .singleItem {
+    padding-bottom: 120%; /* Điều chỉnh tỉ lệ cho mobile */
+  }
+  
+  .itemsDetails {
+    padding: 15px;
+  }
+  
+  .itemsDetails h4 a {
+    font-size: 18px;
+  }
+}
+
+/* Loading Styles */
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.loadingIcon {
+  font-size: 40px;
+  color: #007bff;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}

@@ -12,6 +12,7 @@ const Header = () => {
   // Xử lý đăng xuất
   const handleLogout = () => {
     localStorage.removeItem('userToken'); // Xóa token
+    localStorage.removeItem('userInfo'); // Xóa thông tin người dùng
     navigate('/login'); // Điều hướng về trang đăng nhập
   };
 

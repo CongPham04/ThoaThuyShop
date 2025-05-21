@@ -207,7 +207,7 @@
 }
 
 .modalCloseButton:hover {
-  color: #dc3545; /* Màu đỏ khi hover, tương tự deleteButton */
+  color: #dc3545;
 }
 
 .formGroup {
@@ -221,13 +221,20 @@
   color: #555;
 }
 
-.formGroup input {
+.formGroup input,
+.formGroup select {
   width: 100%;
   padding: 8px;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 14px;
   box-sizing: border-box;
+}
+
+.formGroup select:focus,
+.formGroup input:focus {
+  border-color: #007bff;
+  outline: none;
 }
 
 .rolesRadio {
@@ -275,7 +282,6 @@
   background-color: #5a6268;
 }
 
-/* Styles cho thông báo */
 .notificationContainer {
   position: fixed;
   top: 20px;
@@ -342,7 +348,6 @@
   }
 }
 
-/* Styles cho loading */
 .loadingContainer {
   display: flex;
   justify-content: center;
