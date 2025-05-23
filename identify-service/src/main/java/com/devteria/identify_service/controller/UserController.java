@@ -3,6 +3,7 @@ package com.devteria.identify_service.controller;
 import com.devteria.identify_service.dto.request.ApiResponse;
 import com.devteria.identify_service.dto.request.UserCreationRequest;
 import com.devteria.identify_service.dto.request.UserUpdateRequest;
+import com.devteria.identify_service.dto.response.CategoryResponse;
 import com.devteria.identify_service.dto.response.UserResponse;
 import com.devteria.identify_service.entity.User;
 import com.devteria.identify_service.service.UserService;
@@ -31,12 +32,14 @@ public class UserController {
         respose.setData(userService.createRequest(request));
         return respose;
     }
-    @GetMapping("/allUsers")
-    List<User> getAllUsers() {
+    @GetMapping(value = "/allUsers", produces = "application/json")
+    ApiResponse<List<UserResponse>> getAllUsers() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         log.info("username: {}", authentication.getName());
         authentication.getAuthorities().forEach(grantedAuthority -> log.info(grantedAuthority.getAuthority()));
-        return userService.getUsers();
+        return ApiResponse.<List<UserResponse>>builder()
+                .data(userService.getUsers())
+                .build();
     }
     @GetMapping("/{userId}")
     ApiResponse<UserResponse> getUser(@PathVariable("userId") String userId) {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faLock, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faLock, faCheck, faTimes, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle, faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import authService from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ const Login = () => {
   });
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Trạng thái hiển thị mật khẩu
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -22,6 +23,10 @@ const Login = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+  };
+
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev);
   };
 
   const addNotification = (message, type = 'success') => {
@@ -58,9 +63,11 @@ const Login = () => {
       } else {
         localStorage.removeItem('rememberMe');
       }
-      
-      // const role = response.role || localStorage.getItem('userRole');
-      const role = Array.isArray(response.data.user.roles) && response.data.user.roles.length > 0 ? response.data.user.roles[0] : '' || localStorage.getItem('userRole');
+
+      const role =
+        (Array.isArray(response.data.user.roles) && response.data.user.roles.length > 0
+          ? response.data.user.roles[0]
+          : '') || localStorage.getItem('userRole');
 
       console.log('role', role);
 
@@ -70,8 +77,6 @@ const Login = () => {
           navigate('/dashboard');
         } else {
           navigate('/home_page');
-          // localStorage.removeItem('userToken');
-          // navigate('/login');
         }
       }, 2000);
     } catch (err) {
@@ -80,6 +85,7 @@ const Login = () => {
       setLoading(false);
     }
   };
+
   const handleSocialLogin = (provider) => {
     console.log(`Logging in with ${provider}`);
   };
@@ -135,16 +141,26 @@ const Login = () => {
                 <FontAwesomeIcon icon={faLock} className={styles['input-icon']} />
                 Mật khẩu
               </label>
-              <input
-                type="password"
-                id="password"
-                name="password"
-                placeholder="Nhập mật khẩu"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                disabled={loading}
-              />
+              <div className={styles['password-wrapper']}>
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  placeholder="Nhập mật khẩu"
+                  value={formData.password}
+                  onChange={handleChange}
+                  required
+                  disabled={loading}
+                />
+                <button
+                  type="button"
+                  className={styles['toggle-password']}
+                  onClick={toggleShowPassword}
+                  disabled={loading}
+                >
+                  <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash } />
+                </button>
+              </div>
             </div>
 
             <div className={`${styles['single-input-fields']} ${styles['login-check']}`}>

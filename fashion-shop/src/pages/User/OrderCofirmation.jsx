@@ -167,7 +167,7 @@ const OrderConfirmation = () => {
         </div>
         <div className={styles.container}>
           {orders.length === 0 ? (
-            <div className={styles.error}>Không tìm thấy đơn hàng nào.</div>
+            <div className={styles.error}>Không có đơn hàng nào!</div>
           ) : (
             orders.map((order) => (
               <div key={order.id} className={styles.orderWrapper}>

@@ -78,7 +78,7 @@ const Customer = () => {
         }
 
         const response = await api.get('/users/allUsers');
-        setCustomers(response.data);
+        setCustomers(response.data.data);
         setLoading(false);
       } catch (err) {
         addNotification('Lỗi: Không lấy được dữ liệu! Kiểm tra lại máy chủ', 'error');
@@ -151,7 +151,7 @@ const Customer = () => {
       await api.post('/users/addUser', dataToSubmit);
       addNotification('Thêm thành công!', 'success');
       const response = await api.get('/users/allUsers');
-      setCustomers(response.data);
+      setCustomers(response.data.data);
       setIsAddModalOpen(false);
       setFormData({
         username: '',
@@ -181,7 +181,7 @@ const Customer = () => {
       await api.put(`/users/${editingCustomer.id}`, dataToSubmit);
       addNotification('Cập nhật thành công!', 'success');
       const response = await api.get('/users/allUsers');
-      setCustomers(response.data);
+      setCustomers(response.data.data);
       setIsEditModalOpen(false);
       setEditingCustomer(null);
       setFormData({
@@ -324,15 +324,9 @@ const Customer = () => {
                 <th onClick={() => requestSort('firstname')}>
                   Tên <FontAwesomeIcon icon={getSortIcon('firstname')} />
                 </th>
-                <th onClick={() => requestSort('lastname')}>
-                  Họ <FontAwesomeIcon icon={getSortIcon('lastname')} />
-                </th>
-                <th onClick={() => requestSort('dob')}>
-                  Ngày Sinh <FontAwesomeIcon icon={getSortIcon('dob')} />
-                </th>
-                <th onClick={() => requestSort('gender')}>
-                  Giới Tính <FontAwesomeIcon icon={getSortIcon('gender')} />
-                </th>
+                <th>Họ</th>                 
+                <th >Ngày Sinh</th>                                 
+                <th>Giới Tính</th>               
                 <th>Vai Trò</th>
                 <th>Mật Khẩu</th>
                 <th></th>

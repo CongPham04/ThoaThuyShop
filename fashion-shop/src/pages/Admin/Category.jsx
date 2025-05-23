@@ -259,6 +259,16 @@ const Category = () => {
         </div>
 
         <div className={styles.filterContainer}>
+          <div className={styles.searchBar}>
+            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Tìm kiếm danh mục..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
           <div className={styles.collectionFilter}>
             <label>Lọc theo Bộ Sưu Tập:</label>
             <select
@@ -273,16 +283,6 @@ const Category = () => {
                 </option>
               ))}
             </select>
-          </div>
-          <div className={styles.searchBar}>
-            <FontAwesomeIcon icon={faSearch} className={styles.searchIcon} />
-            <input
-              type="text"
-              placeholder="Tìm kiếm danh mục..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className={styles.searchInput}
-            />
           </div>
         </div>
 

@@ -304,7 +304,7 @@ const Header = () => {
 
       {/* Bottom Header */}
       <div className={`${styles.headerBottom} text-center`}>
-        <p>Giảm giá lên đến 50% Giảm giá lớn nhất. Nhanh tay! Khuyến mãi có hạn Mua ngay <a href="/products-details_user?id=28" className={styles.browseBtn}>Mua ngay</a></p>
+        <p>Giảm giá lên đến 50% Giảm giá lớn nhất. Nhanh tay! Khuyến mãi có hạn<a href="/products-details_user?id=28" className={styles.browseBtn}>Mua ngay</a></p>
       </div>
     </div>
   );

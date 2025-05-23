@@ -85,6 +85,51 @@
     outline: none;
 }
 
+/* Password wrapper để chứa input và nút con mắt */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input[type="text"],
+.password-wrapper input[type="password"] {
+    width: 100%;
+    height: 50px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0 40px 0 15px; /* Thêm padding bên phải để tránh chồng lấn với con mắt */
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.password-wrapper input:focus {
+    border-color: #4a90e2;
+    outline: none;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #666;
+    font-size: 16px;
+    padding: 0;
+}
+
+.toggle-password:hover {
+    color: #4a90e2;
+}
+
+.toggle-password:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
 /* Checkbox styling */
 .login-check {
     display: flex;

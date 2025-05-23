@@ -70,13 +70,12 @@ public class UserService {
         return userMapper.toUserResponse(user);
     }
     @PreAuthorize("hasRole('ADMIN')") // kiểm tra Role trước khi chạy Method - hay sử dụng
-    public List<User> getUsers(){
+    public List<UserResponse> getUsers(){
         log.info("In method get users");
         List<User> users = userRepository.findAll();
-//        List<UserResponse> userResponses = users.stream()
-//                .map(userMapper::toUserResponse)
-//                .toList();
-        return users;
+        return userRepository.findAll().stream()
+                .map(userMapper::toUserResponse)
+                .toList();
     }
 //    @PostAuthorize("hasRole('ADMIN')") // Chạy Method trước khi kiểm tra Role - ít sử dụng hơn
     @PostAuthorize("returnObject.username == authentication.name") // Kiểm tra xem user trả về có đúng với user login va không?(Chỉ có user login thì mới có thể thấy được thông tin của user qua id thôi!)

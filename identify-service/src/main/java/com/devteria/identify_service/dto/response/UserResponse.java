@@ -21,4 +21,5 @@ public class UserResponse {
     LocalDate dob;
     String gender;
     Set<String> roles;
+    String password;
 }
