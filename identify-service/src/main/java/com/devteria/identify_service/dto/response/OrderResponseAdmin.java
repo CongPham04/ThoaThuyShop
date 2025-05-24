@@ -12,12 +12,12 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class OrderResponse {
+public class OrderResponseAdmin {
     Long id;
     String status;
     LocalDateTime createdAt;
     BigDecimal totalPrice;
     List<OrderItemResponse> items;
     ShippingInfoResponse shippingInfo;
-    String userId; // Thêm userId thay vì user
+    String userId;
 }

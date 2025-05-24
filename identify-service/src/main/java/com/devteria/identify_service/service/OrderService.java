@@ -4,12 +4,14 @@ import com.devteria.identify_service.dto.request.CreateOrderRequest;
 import com.devteria.identify_service.dto.request.OrderItemRequest;
 import com.devteria.identify_service.dto.response.OrderItemResponse;
 import com.devteria.identify_service.dto.response.OrderResponse;
+import com.devteria.identify_service.dto.response.OrderResponseAdmin;
 import com.devteria.identify_service.entity.*;
 import com.devteria.identify_service.exception.AppException;
 import com.devteria.identify_service.exception.ErrorCode;
 import com.devteria.identify_service.mapper.OrderMapper;
 import com.devteria.identify_service.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -113,6 +115,13 @@ public class OrderService {
                 .map(orderMapper::toOrderResponse)
                 .collect(Collectors.toList());
     }
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<OrderResponseAdmin> getAllOrdersForAdmin() {
+        List<Order> allOrders = orderRepository.findAll();
+        return allOrders.stream()
+                .map(orderMapper::toOrderResponseAdmin)
+                .collect(Collectors.toList());
+    }
 
     public void cancelOrder(Long orderId) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
@@ -133,5 +142,33 @@ public class OrderService {
 
         // Delete the order
         orderRepository.delete(order);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    public void cancelOrderByAdmin(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        // Delete associated shipping info and order items
+        shippingInfoRepository.delete(order.getShippingInfo());
+        orderItemRepository.deleteAll(order.getItems());
+
+        // Delete the order
+        orderRepository.delete(order);
+    }
+    @PreAuthorize("hasRole('ADMIN')")
+    public OrderResponseAdmin confirmOrder(Long orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        // Chỉ cho phép xác nhận nếu trạng thái là "pending"
+        if (!order.getStatus().equals("pending")) {
+            throw new AppException(ErrorCode.ORDER_CANNOT_BE_CONFIRME);
+        }
+
+        // Cập nhật trạng thái thành "confirmed"
+        order.setStatus("confirmed");
+        order = orderRepository.save(order);
+
+        return orderMapper.toOrderResponseAdmin(order);
     }
 }

@@ -31,8 +31,8 @@ public enum ErrorCode {
     ORDER_ITEMS_EMPTY(6005, "Order must contain at least one item"), // Added for empty order items
     NOT_AUTHORIZED(9001, "Not authorized"),
     IMAGE_NOT_FOUND(7001, "Image not found"),
-    INVALID_INPUT(6007, "Invalid input" );
-
+    INVALID_INPUT(6007, "Invalid input" ),
+    ORDER_CANNOT_BE_CONFIRME(6008, "Order cannot be confirmed"),;
     private int code;
     private String message;
 

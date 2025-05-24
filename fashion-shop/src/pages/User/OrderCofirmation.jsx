@@ -175,7 +175,7 @@ const OrderConfirmation = () => {
                     <h4>Thông Tin Đơn Hàng #{order.id}</h4>
                   <p className={styles.status}>
                     <strong>Trạng thái:</strong>{" "}
-                    {order.status === "pending" ? "Chưa xác nhận" : "Đã xác nhận"}
+                    {order.status === "pending" ? "Chờ xác nhận" : "Đã xác nhận"}
                   </p>
                   <p>
                     <strong>Địa chỉ giao hàng:</strong> {order.shippingInfo?.address || "Chưa có"}

@@ -17,6 +17,7 @@ import ProductDetailUsers from "./pages/User/ProductDetail";
 import Checkout from "./pages/User/Checkout";
 import Cart from "./pages/User/Cart";
 import OrderConfirmation from "./pages/User/OrderCofirmation";
+import OrderManagement from "./pages/Admin/OrderManagement";
 function App() {
   return (  
     <Router>
@@ -54,6 +55,14 @@ function App() {
           element={
             <PrivateRoute allowedRoles={['ADMIN']}>
               <Product />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path='/order'
+          element={ 
+            <PrivateRoute allowedRoles={['ADMIN']}>
+              <OrderManagement />
             </PrivateRoute>
           }
         />

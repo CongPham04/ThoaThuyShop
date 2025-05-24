@@ -78,7 +78,8 @@ public class UserService {
                 .toList();
     }
 //    @PostAuthorize("hasRole('ADMIN')") // Chạy Method trước khi kiểm tra Role - ít sử dụng hơn
-    @PostAuthorize("returnObject.username == authentication.name") // Kiểm tra xem user trả về có đúng với user login va không?(Chỉ có user login thì mới có thể thấy được thông tin của user qua id thôi!)
+//    @PostAuthorize("returnObject.username == authentication.name") // Kiểm tra xem user trả về có đúng với user login va không?(Chỉ có user login thì mới có thể thấy được thông tin của user qua id thôi!)
+    @PreAuthorize("hasRole('ADMIN')")
     public UserResponse getUser(String id){
         log.info("In method get users by Id");
         return userMapper.toUserResponse(userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found")));

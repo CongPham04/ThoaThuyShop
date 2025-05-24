@@ -19,6 +19,7 @@ const Sidebar = () => {
     { name: 'Customer', icon: faUsers },
     { name: 'Category', icon: faList },
     { name: 'Product', icon: faBox },
+    { name: 'Order', icon: faCreditCard },
     // { name: 'Transaction', icon: faCreditCard },
     // { name: 'Statistics', icon: faChartLine },
     // { name: 'Campaign', icon: faBullhorn },
