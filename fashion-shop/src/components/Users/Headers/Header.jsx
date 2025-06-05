@@ -9,6 +9,7 @@ import userAvatar from '../../../assets/img/profiles/53b90b59-67fe-42e4-bf10-d9e
 import image1 from '../../../assets/img/logo/placeholder.jpg';
 import api from '../../../services/api';
 import userService from '../../../services/userService';
+import authService from '../../../services/authService';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -126,8 +127,7 @@ const Header = () => {
 
   // Xử lý đăng xuất
   const handleLogout = () => {
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('userInfo');
+    authService.logout();
     navigate('/login');
   };
   const handleOrder = () => {
