@@ -107,7 +107,7 @@ const Header = () => {
   };
   // Điều hướng đến trang thông tin tài khoản
   const handleAccountInfo = () => {
-    navigate('/account');
+    navigate('/user-info');
     setIsMenuOpen(false);
   };
 

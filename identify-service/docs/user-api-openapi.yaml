@@ -1,0 +1,522 @@
+openapi: 3.0.3
+info:
+  title: ThoaThuyShop User Management API
+  description: REST API for user management in ThoaThuyShop identify-service
+  version: 1.0.0
+  contact:
+    name: ThoaThuyShop Development Team
+    email: support@thoathuyshop.com
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+security:
+  - BearerAuth: []
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - Authentication
+      summary: Register a new user account
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreationRequest'
+      responses:
+        '200':
+          description: User registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUserResponse'
+        '400':
+          description: Invalid input data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/token:
+    post:
+      tags:
+        - Authentication
+      summary: Authenticate user and get access token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthenticationRequest'
+      responses:
+        '200':
+          description: Authentication successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseAuthenticationResponse'
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /auth/introspect:
+    post:
+      tags:
+        - Authentication
+      summary: Validate and introspect JWT token
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntrospectRequest'
+      responses:
+        '200':
+          description: Token validation result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseIntrospectResponse'
+
+  /users/addUser:
+    post:
+      tags:
+        - User Management
+      summary: Create a new user (Admin only)
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreationRequest'
+      responses:
+        '200':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUser'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin role required
+
+  /users/allUsers:
+    get:
+      tags:
+        - User Management
+      summary: Get all users (Admin only)
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: List of all users
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUserResponseList'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin role required
+
+  /users/{userId}:
+    get:
+      tags:
+        - User Management
+      summary: Get user by ID
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: User UUID
+      responses:
+        '200':
+          description: User information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUserResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+
+    put:
+      tags:
+        - User Management
+      summary: Update user information
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: User UUID
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserUpdateRequest'
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+        '401':
+          description: Unauthorized
+        '404':
+          description: User not found
+
+    delete:
+      tags:
+        - User Management
+      summary: Delete user by ID (Admin only)
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: User UUID
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: "User has been deleted"
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden - Admin role required
+        '404':
+          description: User not found
+
+  /users/myInfo:
+    get:
+      tags:
+        - User Management
+      summary: Get current authenticated user's information
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: Current user information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponseUserResponse'
+        '401':
+          description: Unauthorized
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    UserCreationRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          minLength: 3
+          description: Username (minimum 3 characters)
+          example: "johndoe"
+        password:
+          type: string
+          minLength: 8
+          description: Password (minimum 8 characters)
+          example: "password123"
+        firstname:
+          type: string
+          description: First name
+          example: "John"
+        lastname:
+          type: string
+          description: Last name
+          example: "Doe"
+        dob:
+          type: string
+          format: date
+          description: Date of birth (YYYY-MM-DD)
+          example: "1990-01-01"
+        gender:
+          type: string
+          description: Gender
+          example: "Male"
+        roles:
+          type: array
+          items:
+            type: string
+          description: User roles
+          example: ["USER"]
+
+    UserUpdateRequest:
+      type: object
+      properties:
+        password:
+          type: string
+          description: New password (optional)
+        firstname:
+          type: string
+          description: First name (optional)
+        lastname:
+          type: string
+          description: Last name (optional)
+        dob:
+          type: string
+          format: date
+          description: Date of birth (optional, YYYY-MM-DD)
+        gender:
+          type: string
+          description: Gender (optional)
+        roles:
+          type: array
+          items:
+            type: string
+          description: User roles (optional)
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User UUID
+          example: "123e4567-e89b-12d3-a456-426614174000"
+        username:
+          type: string
+          description: Username
+          example: "johndoe"
+        firstname:
+          type: string
+          description: First name
+          example: "John"
+        lastname:
+          type: string
+          description: Last name
+          example: "Doe"
+        dob:
+          type: string
+          format: date
+          description: Date of birth
+          example: "1990-01-01"
+        gender:
+          type: string
+          description: Gender
+          example: "Male"
+        roles:
+          type: array
+          items:
+            type: string
+          description: User roles
+          example: ["USER"]
+        password:
+          type: string
+          description: Password (only in some contexts)
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: User UUID
+        username:
+          type: string
+          description: Username
+        password:
+          type: string
+          description: Hashed password
+        firstname:
+          type: string
+          description: First name
+        lastname:
+          type: string
+          description: Last name
+        dob:
+          type: string
+          format: date
+          description: Date of birth
+        gender:
+          type: string
+          description: Gender
+        roles:
+          type: array
+          items:
+            type: string
+          description: User roles
+        cart:
+          description: User's shopping cart
+          nullable: true
+        orders:
+          type: array
+          description: User's orders
+        reviews:
+          type: array
+          description: User's product reviews
+
+    AuthenticationRequest:
+      type: object
+      required:
+        - username
+        - password
+      properties:
+        username:
+          type: string
+          description: Username
+          example: "johndoe"
+        password:
+          type: string
+          description: Password
+          example: "password123"
+
+    AuthenticationResponse:
+      type: object
+      properties:
+        token:
+          type: string
+          description: JWT access token
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+        authenticated:
+          type: boolean
+          description: Authentication status
+          example: true
+
+    IntrospectRequest:
+      type: object
+      required:
+        - token
+      properties:
+        token:
+          type: string
+          description: JWT token to validate
+          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+    IntrospectResponse:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          description: Token validity status
+          example: true
+
+    ApiResponseUserResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1000
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        data:
+          $ref: '#/components/schemas/UserResponse'
+
+    ApiResponseUserResponseList:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1000
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+
+    ApiResponseUser:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1000
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        data:
+          $ref: '#/components/schemas/User'
+
+    ApiResponseAuthenticationResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1000
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        data:
+          $ref: '#/components/schemas/AuthenticationResponse'
+
+    ApiResponseIntrospectResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Response code
+          example: 1000
+        message:
+          type: string
+          description: Response message
+          example: "Success"
+        data:
+          $ref: '#/components/schemas/IntrospectResponse'
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          description: Error code
+          example: 1001
+        message:
+          type: string
+          description: Error message
+          example: "User invalid"
+        data:
+          nullable: true
+          description: Error data (usually null) 

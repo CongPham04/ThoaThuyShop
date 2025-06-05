@@ -18,6 +18,7 @@ import Checkout from "./pages/User/Checkout";
 import Cart from "./pages/User/Cart";
 import OrderConfirmation from "./pages/User/OrderCofirmation";
 import OrderManagement from "./pages/Admin/OrderManagement";
+import UserInfo from "./pages/User/UserInfo";
 function App() {
   return (  
     <Router>
@@ -93,6 +94,7 @@ function App() {
         <Route path='/checkout' element={<PrivateRoute allowedRoles={['USER']}><Checkout /></PrivateRoute>} />
         <Route path='/cart' element={<PrivateRoute allowedRoles={['USER']}><Cart/></PrivateRoute>} />
         <Route path='/order-confirmation' element={<PrivateRoute allowedRoles={['USER']}><OrderConfirmation/></PrivateRoute>} />
+        <Route path='/user-info' element={<PrivateRoute allowedRoles={['USER']}><UserInfo/></PrivateRoute>} />
       </Routes>
     </Router>
   );
