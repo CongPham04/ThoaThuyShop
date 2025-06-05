@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 // import Header from "./components/Header/Header";
 // import Footer from "./components/Footer/Footer";
 import Homes from "./pages/Home/Home";
@@ -75,6 +75,7 @@ function App() {
             </PrivateRoute>
           }
         />
+        <Route path='/home-page' element={<Navigate to="/home_page" replace />} />
         <Route
           path='/products_user'
           element={
@@ -95,6 +96,8 @@ function App() {
         <Route path='/cart' element={<PrivateRoute allowedRoles={['USER']}><Cart/></PrivateRoute>} />
         <Route path='/order-confirmation' element={<PrivateRoute allowedRoles={['USER']}><OrderConfirmation/></PrivateRoute>} />
         <Route path='/user-info' element={<PrivateRoute allowedRoles={['USER']}><UserInfo/></PrivateRoute>} />
+        
+        <Route path='*' element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
   );
