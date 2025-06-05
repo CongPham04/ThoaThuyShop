@@ -8,6 +8,7 @@ import logo from '../../../assets/img/logo/LogoNew.png';
 import userAvatar from '../../../assets/img/profiles/53b90b59-67fe-42e4-bf10-d9e1f10ebc80.png';
 import image1 from '../../../assets/img/logo/placeholder.jpg';
 import api from '../../../services/api';
+import userService from '../../../services/userService';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,9 +17,37 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [productImages, setProductImages] = useState({}); // Store image URLs
+  const [currentUser, setCurrentUser] = useState(null); // Store current user info
+  const [userLoading, setUserLoading] = useState(true); // Loading state for user info
   const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  // Fetch current user information
+  useEffect(() => {
+    const fetchCurrentUser = async () => {
+      try {
+        setUserLoading(true);
+        const response = await userService.getMyInfo();
+        if (response.code === 1000 && response.data) {
+          setCurrentUser(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+        // Don't show error notification here as it might be due to not being logged in
+      } finally {
+        setUserLoading(false);
+      }
+    };
+
+    // Only fetch user info if we have a token
+    const token = localStorage.getItem('userToken');
+    if (token) {
+      fetchCurrentUser();
+    } else {
+      setUserLoading(false);
+    }
+  }, []);
 
   // Fetch cart items from API
   useEffect(() => {
@@ -120,6 +149,28 @@ const Header = () => {
     setIsCartOpen(false);
   };
 
+  // Get display name for current user
+  const getUserDisplayName = () => {
+    if (userLoading) {
+      return "Loading...";
+    }
+    
+    if (!currentUser) {
+      return "User";
+    }
+
+    // Prefer firstname, fallback to username
+    if (currentUser.firstname) {
+      return currentUser.firstname;
+    }
+    
+    if (currentUser.username) {
+      return currentUser.username;
+    }
+    
+    return "User";
+  };
+
   return (
     <div className={styles.headerArea}>
       {/* Top Header */}
@@ -195,7 +246,7 @@ const Header = () => {
                     onMouseLeave={() => setIsMenuOpen(false)}
                   >
                     <img src={userAvatar} alt="User" className={styles.avatar} />
-                    <span className={styles.userName}>User</span>
+                    <span className={styles.userName}>{getUserDisplayName()}</span>
                     {isMenuOpen && (
                       <div className={styles.dropdownMenu}>
                         <button onClick={handleOrder} className={styles.menuItem}>
