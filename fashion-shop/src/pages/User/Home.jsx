@@ -19,7 +19,7 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const intervalRef = useRef(null);
-
+   console.log(">> Đã vào trang Home USER");
   const slides = [
     { bg: sliderBg1, content: { title: "Phong cách tối giản của Genz", description: "Consectetur adipisicing elit. Laborum fuga incidunt laboriosam voluptas iure, delectus dignissimos facilis neque nulla earum." } },
     { bg: sliderBg2, content: { title: "Phong cách tối giản của Genz", description: "Consectetur adipisicing elit. Laborum fuga incidunt laboriosam voluptas iure, delectus dignissimos facilis neque nulla earum." } },
@@ -121,7 +121,7 @@ const Home = () => {
                               <span>Khuyến mại thời trang</span>
                               <h1>{slide.content.title}</h1>
                               <p>{slide.content.description}</p>
-                              <a href="/login" className={styles.heroBtn}>MUA NGAY</a>
+                              <a href="/products_user?collectionId=6" className={styles.heroBtn}>MUA NGAY</a>
                             </div>
                           </div>
                         </div>

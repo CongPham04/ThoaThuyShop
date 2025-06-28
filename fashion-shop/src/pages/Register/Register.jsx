@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './Register.module.css';
 import authService from '../../services/authService';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -58,8 +60,15 @@ const Register = () => {
     }
   };
 
+  const goToHome = () => {
+    navigate('/login');
+  };
+
   return (
     <main className={`${styles['login-bg']} d-flex align-items-center justify-content-center min-vh-100`}>
+      <button className={styles['back-arrow']} onClick={goToHome}>
+        <FontAwesomeIcon icon={faArrowLeft} />
+      </button>
       <div className={`${styles['register-form-area']} bg-white p-4 rounded shadow`}>
         <div className={styles['login-form']}>
           <div className={styles['login-heading']}>
@@ -100,20 +109,20 @@ const Register = () => {
               </div>
             </div>
             <div className={styles['single-input-fields']}>
-                <label htmlFor="gender" className="form-label">Giới tính</label>
-                <select
-                    name="gender"
-                    id="gender"
-                    value={formData.gender}
-                    onChange={handleChange}
-                    className="form-control"
-                >
-                    <option value="">Chọn giới tính</option>
-                    <option value="MALE">Nam</option>
-                    <option value="FEMALE">Nữ</option>
-                    <option value="OTHER">Khác</option>
-                </select>
-                </div>
+              <label htmlFor="gender" className="form-label">Giới tính</label>
+              <select
+                name="gender"
+                id="gender"
+                value={formData.gender}
+                onChange={handleChange}
+                className="form-control"
+              >
+                <option value="">Chọn giới tính</option>
+                <option value="MALE">Nam</option>
+                <option value="FEMALE">Nữ</option>
+                <option value="OTHER">Khác</option>
+              </select>
+            </div>
             <div className={styles['single-input-fields']}>
               <label htmlFor="dob" className="form-label">Ngày sinh</label>
               <input

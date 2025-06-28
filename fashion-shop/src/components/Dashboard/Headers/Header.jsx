@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faBell, faSignOutAlt, faUser } from '@fortawesome/free-solid-svg-icons';
@@ -8,7 +8,19 @@ import adminAvatar from '../../../assets/img/profiles/53b90b59-67fe-42e4-bf10-d9
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState(null);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem('userInfo');
+    if (storedUser) {
+      try {
+        const parsedUser = JSON.parse(storedUser);
+        setUserInfo(parsedUser);
+      } catch (e) {
+        console.error("Failed to parse user info:", e);
+      }
+    }
+  }, []);
   // Xử lý đăng xuất
   const handleLogout = () => {
     localStorage.removeItem('userToken'); // Xóa token
@@ -21,6 +33,7 @@ const Header = () => {
     navigate('/account');
     setIsMenuOpen(false); // Đóng menu sau khi click
   };
+  
 
   return (
     <header className={styles.header}>
@@ -56,7 +69,7 @@ const Header = () => {
             alt="Admin" 
             className={styles.avatar}
           />
-          <span className={styles.adminName}>Admin</span>
+          <span className={styles.adminName}>{userInfo?.firstname || 'Admin'}</span>
 
           {/* Dropdown menu */}
           {isMenuOpen && (

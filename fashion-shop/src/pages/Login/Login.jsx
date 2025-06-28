@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styles from './Login.module.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faLock, faCheck, faTimes, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faLock, faCheck, faTimes, faEye, faEyeSlash, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle, faFacebookF } from '@fortawesome/free-brands-svg-icons';
 import authService from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ const Login = () => {
   });
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false); // Trạng thái hiển thị mật khẩu
+  const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -90,8 +90,15 @@ const Login = () => {
     console.log(`Logging in with ${provider}`);
   };
 
+  const goToHome = () => {
+    navigate('/');
+  };
+
   return (
     <main className={styles['login-bg']}>
+      <button className={styles['back-arrow']} onClick={goToHome}>
+        <FontAwesomeIcon icon={faArrowLeft} />
+      </button>
       <div className={styles['login-form-area']}>
         <form className={styles['login-form']} onSubmit={handleSubmit}>
           <div className={styles.notificationContainer}>
@@ -158,7 +165,7 @@ const Login = () => {
                   onClick={toggleShowPassword}
                   disabled={loading}
                 >
-                  <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash } />
+                  <FontAwesomeIcon icon={showPassword ? faEye : faEyeSlash} />
                 </button>
               </div>
             </div>

@@ -361,7 +361,7 @@ const Cart = () => {
                     onClick={handleCheckout}
                     disabled={selectedItems.length === 0}
                   >
-                    Mua Hàng
+                    Mua hàng
                   </button>
                 </div>
               </>

@@ -19,6 +19,7 @@ const Header = () => {
   const navigate = useNavigate();
   const [showSearch, setShowSearch] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [userInfo, setUserInfo] = useState(null);
 
   // Fetch cart items from API
   useEffect(() => {
@@ -45,6 +46,17 @@ const Header = () => {
     };
     fetchCartItems();
   }, []);
+  useEffect(() => {
+  const storedUser = localStorage.getItem('userInfo');
+  if (storedUser) {
+    try {
+      const parsedUser = JSON.parse(storedUser);
+      setUserInfo(parsedUser);
+    } catch (e) {
+      console.error("Failed to parse user info:", e);
+    }
+  }
+}, []);
 
   // Fetch product images when cart items are loaded
   useEffect(() => {
@@ -195,7 +207,7 @@ const Header = () => {
                     onMouseLeave={() => setIsMenuOpen(false)}
                   >
                     <img src={userAvatar} alt="User" className={styles.avatar} />
-                    <span className={styles.userName}>User</span>
+                    <span className={styles.userName}>{userInfo?.firstname || 'User'}</span>
                     {isMenuOpen && (
                       <div className={styles.dropdownMenu}>
                         <button onClick={handleOrder} className={styles.menuItem}>

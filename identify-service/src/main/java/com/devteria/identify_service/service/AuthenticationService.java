@@ -48,42 +48,6 @@ public class AuthenticationService {
     @Value("${jwt.signerKey}")
     protected String SIGNER_KEY;
     PasswordEncoder passwordEncoder;
-//    public AuthenticationResponse authenticate(AuthenticationRequest authenticationRequest) {
-//        var user = userRepository.findByUsername(authenticationRequest.getUsername())
-//                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-//        boolean authenticated = passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword());
-//        if(!authenticated)
-//            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
-//        var token = generateToken(user);
-//        // Lấy role từ user (giả sử User entity có trường role)
-//        String role = user.getRoles() != null && !user.getRoles().isEmpty() ?
-//                user.getRoles().iterator().next() : "USER";
-//        return AuthenticationResponse.builder()
-//                .token(token)
-//                .authenticated(true)
-//                .role(role)
-//                .build();
-//        // Tìm user bằng username hoặc email
-//        var user = userRepository.findByUsernameOrEmail(authenticationRequest.getUsernameOrEmail())
-//                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
-//        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
-//        if (!passwordEncoder.matches(authenticationRequest.getPassword(), user.getPassword())) {
-//            throw new AppException(ErrorCode.UNAUTHORIZED_ACCESS);
-//        }
-//
-//        // Thời gian hết hạn token phụ thuộc vào remember me
-//        long expirationTime = authenticationRequest.isRememberMe() ?
-//                ChronoUnit.DAYS.getDuration().toMillis() : // 1 ngày nếu remember me
-//                ChronoUnit.HOURS.getDuration().toMillis(); // 1 giờ nếu không
-//
-//        var token = generateToken(user, expirationTime);
-//
-//        return AuthenticationResponse.builder()
-//                .token(token)
-//                .authenticated(true)
-//                .build();
-//    }
 public AuthenticationResponse<UserResponse> authenticate(AuthenticationRequest authenticationRequest) {
     // Tìm user bằng username
     var user = userRepository.findByUsername(authenticationRequest.getUsername())
